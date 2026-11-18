@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="《山城折页》互动网页视觉：以纸艺折页展开重庆的江水、梯坎、索道与灯火。"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23172c29'/%3E%3Cpath d='M17 14h13v36H17zm16 0h13v36H33z' fill='%23f2eddf'/%3E%3Cpath d='M45 14h6v36h-6z' fill='%23a44f3f'/%3E%3C/svg%3E"
+    />
+    <title>山城折页 · 互动视觉</title>
+    <script type="module" crossorigin src="/assets/index-BwVj7Vo4.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CYpmxXOo.css">
+  </head>
+  <body>
+    <main class="experience">
+      <canvas id="scene" aria-label="可拖动展开的山城折页三维模型"></canvas>
+      <video id="ar-video" class="ar-video" playsinline muted aria-hidden="true"></video>
+      <audio
+        id="bgm"
+        loop
+        preload="metadata"
+        aria-label="背景音乐：Soulloom苏洛牧《初夏物语》"
+      >
+        <source
+          src="https://music.163.com/song/media/outer/url?id=2700983792.mp3"
+          type="audio/mpeg"
+        />
+      </audio>
+
+      <header class="masthead">
+        <div class="edition">
+          <span class="edition-dot"></span>
+          <span>巴渝文脉 · 青春共创</span>
+        </div>
+        <div class="title-lockup">
+          <h1>山城<br />折页</h1>
+          <p>一城山水，四折相逢</p>
+        </div>
+      </header>
+
+      <aside class="side-label" aria-hidden="true">
+        <span>INTERACTIVE FOLD STUDY</span>
+        <i></i>
+        <span>CHONGQING · 2026</span>
+      </aside>
+
+      <div class="controls" aria-label="场景控制">
+        <button
+          id="tutorial-toggle"
+          class="icon-button tutorial-toggle is-hidden"
+          type="button"
+          aria-label="打开新手教程"
+          title="打开新手教程"
+        >
+          <i data-lucide="circle-help"></i>
+        </button>
+        <button id="ar-toggle" class="ar-entry" type="button" aria-label="打开增强现实手势模式">
+          <i data-lucide="scan-face"></i>
+          <span>AR 手势</span>
+        </button>
+        <button id="sound-toggle" class="icon-button" type="button" aria-label="播放背景音乐《初夏物语》">
+          <i data-lucide="volume-x"></i>
+        </button>
+        <button id="reset-scene" class="icon-button" type="button" aria-label="重置折页">
+          <i data-lucide="rotate-ccw"></i>
+        </button>
+      </div>
+
+      <nav class="scene-nav" aria-label="折页场景">
+        <button class="scene-tab is-active" type="button" data-scene="0">
+          <span>01</span>
+          <strong>两江折页</strong>
+        </button>
+        <button class="scene-tab" type="button" data-scene="1">
+          <span>02</span>
+          <strong>轻轨穿楼</strong>
+        </button>
+        <button class="scene-tab" type="button" data-scene="2">
+          <span>03</span>
+          <strong>大礼堂</strong>
+        </button>
+      </nav>
+
+      <div class="caption" aria-live="polite">
+        <span id="caption-index">01</span>
+        <div>
+          <p id="caption-title">两江合页</p>
+          <span id="caption-subtitle">水与城，在同一条折痕上相遇</span>
+        </div>
+      </div>
+
+      <div class="fold-control">
+        <span id="control-label" class="fold-control-label">FOLD</span>
+        <input
+          id="fold-range"
+          type="range"
+          min="0"
+          max="100"
+          value="74"
+          aria-label="控制折页展开程度"
+        />
+        <span id="fold-value" class="fold-control-value">74</span>
+      </div>
+
+      <button
+        id="fullscreen-toggle"
+        class="icon-button fullscreen-toggle"
+        type="button"
+        aria-label="进入全屏"
+        title="进入全屏"
+      >
+        <i data-lucide="maximize"></i>
+      </button>
+
+      <span class="author-credit">作者：骆林枫</span>
+
+      <div class="ar-ui" id="ar-ui" aria-hidden="true">
+        <button id="ar-close" class="ar-close" type="button" aria-label="退出增强现实模式">
+          <i data-lucide="x"></i>
+        </button>
+
+        <button
+          id="camera-switch"
+          class="ar-tool ar-camera-switch"
+          type="button"
+          aria-label="切换到后置摄像头"
+          title="切换到后置摄像头"
+        >
+          <i data-lucide="switch-camera"></i>
+        </button>
+
+        <div class="ar-status" role="status">
+          <span class="ar-status-dot" id="ar-status-dot"></span>
+          <span id="ar-status-text">正在开启摄像头</span>
+        </div>
+
+        <div class="hand-cursor" id="hand-cursor" aria-hidden="true">
+          <span></span>
+          <em></em>
+        </div>
+
+        <div class="ar-gesture-tip">
+          <i data-lucide="hand"></i>
+          <span id="ar-gesture-text">捏合拖动 · 展开折页</span>
+        </div>
+
+        <button
+          id="ar-guide-toggle"
+          class="ar-tool ar-guide-toggle is-hidden"
+          type="button"
+          aria-label="打开 AR 手势说明"
+          title="打开手势说明"
+        >
+          <i data-lucide="hand"></i>
+        </button>
+
+        <div class="ar-error" id="ar-error" hidden>
+          <strong>无法进入 AR 模式</strong>
+          <p id="ar-error-text">请允许浏览器使用摄像头后重试。</p>
+          <div>
+            <button id="ar-retry" type="button">重新尝试</button>
+            <button id="ar-error-close" type="button">退出</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="ar-guide" id="ar-guide" aria-hidden="true">
+        <article
+          class="ar-guide-panel"
+          id="ar-guide-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ar-guide-title"
+        >
+          <header class="ar-guide-header">
+            <div>
+              <span>AR GESTURE GUIDE</span>
+              <h2 id="ar-guide-title">四种手势，控制整座城</h2>
+            </div>
+            <div class="ar-guide-count" aria-live="polite">
+              <strong id="ar-guide-index">01</strong>
+              <span>/ 04</span>
+            </div>
+          </header>
+
+          <div class="ar-guide-viewport">
+            <div
+              class="ar-guide-track"
+              id="ar-guide-track"
+              tabindex="0"
+              aria-label="手势说明，共四页，可左右滑动"
+            >
+              <figure class="ar-guide-slide">
+                <img
+                  src="/guide/gesture-01.png"
+                  alt="右手食指与拇指捏合，保持捏合左右拖动。场景 01 展开或收回折页，场景 02 控制列车穿楼位置。"
+                />
+              </figure>
+              <figure class="ar-guide-slide">
+                <img
+                  src="/guide/gesture-02.png"
+                  alt="右手食指与拇指捏合，保持捏合上下拖动，控制大礼堂上下开合。"
+                />
+              </figure>
+              <figure class="ar-guide-slide">
+                <img
+                  src="/guide/gesture-03.png"
+                  alt="左手食指与拇指张开时放大模型，捏合时缩小模型，三个场景通用。"
+                />
+              </figure>
+              <figure class="ar-guide-slide">
+                <img
+                  src="/guide/gesture-04.png"
+                  alt="单指拖动触控屏或使用鼠标拖动，360 度旋转观察模型。"
+                />
+              </figure>
+            </div>
+            <button
+              id="ar-guide-prev"
+              class="ar-guide-arrow ar-guide-prev"
+              type="button"
+              aria-label="上一张手势说明"
+            >
+              <i data-lucide="chevron-left"></i>
+            </button>
+            <button
+              id="ar-guide-next"
+              class="ar-guide-arrow ar-guide-next"
+              type="button"
+              aria-label="下一张手势说明"
+            >
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <footer class="ar-guide-footer">
+            <div class="ar-guide-dots" aria-label="手势说明页码">
+              <button class="is-active" type="button" data-guide-page="0" aria-label="第 1 张"></button>
+              <button type="button" data-guide-page="1" aria-label="第 2 张"></button>
+              <button type="button" data-guide-page="2" aria-label="第 3 张"></button>
+              <button type="button" data-guide-page="3" aria-label="第 4 张"></button>
+            </div>
+            <button id="ar-guide-close" class="ar-guide-close" type="button">
+              <i data-lucide="x"></i>
+              <span>关闭手势说明</span>
+            </button>
+          </footer>
+        </article>
+      </section>
+
+      <section class="tutorial-layer" id="tutorial-layer" aria-label="新手教程">
+        <article
+          class="tutorial-card"
+          id="tutorial-card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tutorial-title"
+        >
+          <header class="tutorial-header">
+            <div>
+              <span class="tutorial-eyebrow">QUICK START / 山城折页</span>
+              <h2 id="tutorial-title">四步，开始折叠这座城</h2>
+              <p>先熟悉观察、调节与场景切换，再打开摄像头，用手势控制模型。</p>
+            </div>
+            <span class="tutorial-badge">4 个操作</span>
+          </header>
+
+          <div class="tutorial-content">
+            <div class="tutorial-visual" aria-hidden="true">
+              <img
+                class="tutorial-model-image"
+                src="/tutorial/model-guide.webp"
+                alt=""
+              />
+              <div class="tutorial-visual-shade"></div>
+              <div class="tutorial-drag-ring">
+                <span>拖动</span>
+                <i></i>
+              </div>
+              <div class="tutorial-slider-cue">
+                <span>滑杆</span>
+                <i><b></b></i>
+                <em>74</em>
+              </div>
+              <div class="tutorial-scene-cue">
+                <span>01</span><span>02</span><span>03</span>
+              </div>
+              <div class="tutorial-ar-cue">
+                <i data-lucide="scan-face"></i>
+                <span>AR</span>
+              </div>
+            </div>
+
+            <ol class="tutorial-list">
+              <li>
+                <span class="tutorial-step">01</span>
+                <div>
+                  <strong>拖动观察模型</strong>
+                  <p>用手指或鼠标滑动模型，可以 360° 观察。</p>
+                </div>
+              </li>
+              <li>
+                <span class="tutorial-step">02</span>
+                <div>
+                  <strong>拉动底部滑杆</strong>
+                  <p>控制折页折叠、列车穿楼与大礼堂开合。</p>
+                </div>
+              </li>
+              <li>
+                <span class="tutorial-step">03</span>
+                <div>
+                  <strong>切换右上场景</strong>
+                  <p>点击 01 / 02 / 03，查看三组重庆模型。</p>
+                </div>
+              </li>
+              <li>
+                <span class="tutorial-step">04</span>
+                <div>
+                  <strong>打开 AR 手势</strong>
+                  <p>允许摄像头后，可用左右手手势控制场景。</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <footer class="tutorial-actions">
+            <button id="tutorial-exit" class="tutorial-exit" type="button">
+              退出
+            </button>
+            <button id="tutorial-continue" class="tutorial-continue" type="button">
+              <span>继续体验</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </footer>
+        </article>
+      </section>
+
+      <div class="loading-screen" id="loading-screen">
+        <div class="loading-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <p>山城折页</p>
+      </div>
+    </main>
+
+  </body>
+</html>
