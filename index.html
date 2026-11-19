@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="《山城折页》互动网页视觉：以纸艺折页展开重庆的江水、梯坎、索道与灯火。"
+      content="sczy—llf 互动网页视觉：以纸艺折页展开重庆的江水、梯坎、索道与灯火。"
     />
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23172c29'/%3E%3Cpath d='M17 14h13v36H17zm16 0h13v36H33z' fill='%23f2eddf'/%3E%3Cpath d='M45 14h6v36h-6z' fill='%23a44f3f'/%3E%3C/svg%3E"
     />
-    <title>山城折页 · 互动视觉</title>
-    <script type="module" crossorigin src="/assets/index-DEkuX94V.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CYpmxXOo.css">
+    <title>sczy—llf · 互动视觉</title>
+    <script type="module" crossorigin src="/assets/index-D_OBm4HO.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B_SujwB7.css">
   </head>
   <body>
     <main class="experience">
-      <canvas id="scene" aria-label="可拖动展开的山城折页三维模型"></canvas>
+      <canvas id="scene" aria-label="可拖动展开的 sczy—llf 三维模型"></canvas>
       <video id="ar-video" class="ar-video" playsinline muted aria-hidden="true"></video>
       <audio
         id="bgm"
@@ -37,7 +37,7 @@
           <span>巴渝文脉 · 青春共创</span>
         </div>
         <div class="title-lockup">
-          <h1>山城<br />折页</h1>
+          <h1>sczy<br />—llf</h1>
           <p>一城山水，四折相逢</p>
         </div>
       </header>
@@ -70,20 +70,32 @@
         </button>
       </div>
 
-      <nav class="scene-nav" aria-label="折页场景">
-        <button class="scene-tab is-active" type="button" data-scene="0">
-          <span>01</span>
-          <strong>两江折页</strong>
+      <div class="scene-nav-stack">
+        <nav class="scene-nav" aria-label="折页场景">
+          <button class="scene-tab is-active" type="button" data-scene="0">
+            <span>01</span>
+            <strong>两江折页</strong>
+          </button>
+          <button class="scene-tab" type="button" data-scene="1">
+            <span>02</span>
+            <strong>轻轨穿楼</strong>
+          </button>
+          <button class="scene-tab" type="button" data-scene="2">
+            <span>03</span>
+            <strong>大礼堂</strong>
+          </button>
+        </nav>
+        <button
+          id="photo-gallery-toggle"
+          class="photo-gallery-entry"
+          type="button"
+          aria-label="打开两江折页实景照片"
+          title="查看真实模型照片"
+        >
+          <i data-lucide="image"></i>
+          <span>实景照片</span>
         </button>
-        <button class="scene-tab" type="button" data-scene="1">
-          <span>02</span>
-          <strong>轻轨穿楼</strong>
-        </button>
-        <button class="scene-tab" type="button" data-scene="2">
-          <span>03</span>
-          <strong>大礼堂</strong>
-        </button>
-      </nav>
+      </div>
 
       <div class="caption" aria-live="polite">
         <span id="caption-index">01</span>
@@ -132,6 +144,33 @@
         >
           <i data-lucide="switch-camera"></i>
         </button>
+
+        <div
+          id="camera-zoom"
+          class="ar-zoom"
+          role="group"
+          aria-label="后置摄像头变焦"
+          aria-hidden="true"
+          hidden
+        >
+          <span class="ar-zoom-kicker">ZOOM</span>
+          <button id="camera-zoom-out" type="button" aria-label="降低相机倍数">
+            <i data-lucide="zoom-out"></i>
+          </button>
+          <input
+            id="camera-zoom-range"
+            type="range"
+            min="1"
+            max="3"
+            step="0.1"
+            value="1"
+            aria-label="相机变焦倍数"
+          />
+          <output id="camera-zoom-value" for="camera-zoom-range">1.0×</output>
+          <button id="camera-zoom-in" type="button" aria-label="提高相机倍数">
+            <i data-lucide="zoom-in"></i>
+          </button>
+        </div>
 
         <div class="ar-status" role="status">
           <span class="ar-status-dot" id="ar-status-dot"></span>
@@ -262,7 +301,7 @@
         >
           <header class="tutorial-header">
             <div>
-              <span class="tutorial-eyebrow">QUICK START / 山城折页</span>
+              <span class="tutorial-eyebrow">QUICK START / sczy—llf</span>
               <h2 id="tutorial-title">四步，开始折叠这座城</h2>
               <p>先熟悉观察、调节与场景切换，再打开摄像头，用手势控制模型。</p>
             </div>
@@ -332,8 +371,112 @@
               退出
             </button>
             <button id="tutorial-continue" class="tutorial-continue" type="button">
-              <span>继续体验</span>
+              <span>开始体验</span>
               <i data-lucide="arrow-right"></i>
+            </button>
+          </footer>
+        </article>
+
+        <div
+          id="guided-tutorial"
+          class="guided-tutorial"
+          aria-hidden="true"
+        >
+          <div id="tour-spotlight" class="tour-spotlight" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </div>
+          <svg
+            id="tour-arrow"
+            class="tour-arrow"
+            aria-hidden="true"
+            preserveAspectRatio="none"
+          >
+            <path class="tour-arrow-sketch"></path>
+            <path class="tour-arrow-line"></path>
+            <path class="tour-arrow-head"></path>
+          </svg>
+          <div id="tour-motion" class="tour-motion" aria-hidden="true"></div>
+          <article
+            id="tour-note"
+            class="tour-note"
+            role="dialog"
+            aria-modal="false"
+            aria-labelledby="tour-title"
+            aria-describedby="tour-body"
+          >
+            <header>
+              <span id="tour-eyebrow">HAND-DRAWN GUIDE · 01 / 06</span>
+              <i data-lucide="pen-line"></i>
+            </header>
+            <h3 id="tour-title">拖动滑杆，让纸城换一种姿态</h3>
+            <p id="tour-body">
+              按住底部的圆形滑块左右拖动，模型会跟着展开、收拢或改变当前场景状态。
+            </p>
+            <footer class="tour-actions">
+              <button id="tour-exit" type="button">退出</button>
+              <button id="tour-next" type="button">
+                <span>我知道了</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="photo-gallery"
+        id="photo-gallery"
+        aria-hidden="true"
+        aria-labelledby="photo-gallery-title"
+      >
+        <article class="photo-gallery-panel" role="dialog" aria-modal="true">
+          <header class="photo-gallery-header">
+            <div>
+              <span>REAL SCENE REFERENCE</span>
+              <h2 id="photo-gallery-title">两江折页 · 实景参照</h2>
+            </div>
+            <div class="photo-gallery-index" aria-live="polite">
+              <strong id="photo-gallery-page">01</strong>
+              <span>/ <b id="photo-gallery-total">05</b></span>
+            </div>
+          </header>
+          <div class="photo-gallery-viewport">
+            <div
+              id="photo-gallery-track"
+              class="photo-gallery-track"
+              tabindex="0"
+              aria-label="模型实景照片，可左右滑动"
+            ></div>
+            <button
+              id="photo-gallery-prev"
+              class="photo-gallery-arrow photo-gallery-prev"
+              type="button"
+              aria-label="上一张实景照片"
+            >
+              <i data-lucide="chevron-left"></i>
+            </button>
+            <button
+              id="photo-gallery-next"
+              class="photo-gallery-arrow photo-gallery-next"
+              type="button"
+              aria-label="下一张实景照片"
+            >
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+          <footer class="photo-gallery-footer">
+            <div class="photo-gallery-caption">
+              <span id="photo-gallery-kicker">两江折页</span>
+              <strong id="photo-gallery-caption">朝天门长江大桥</strong>
+            </div>
+            <div
+              id="photo-gallery-dots"
+              class="photo-gallery-dots"
+              aria-label="实景照片页码"
+            ></div>
+            <button id="photo-gallery-close" class="photo-gallery-close" type="button">
+              <i data-lucide="x"></i>
+              <span>关闭</span>
             </button>
           </footer>
         </article>
@@ -343,7 +486,7 @@
         <div class="loading-mark" aria-hidden="true">
           <span></span><span></span><span></span>
         </div>
-        <p>山城折页</p>
+        <p>sczy—llf</p>
       </div>
     </main>
 
